@@ -1,7 +1,11 @@
 import { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
-import UserModel from "../models/UserModel.js";
-import { type ILoginRequestBody, type IRegisterRequestBody } from "../types/UserTypes.js";
+import { AdminModel } from "../models/adminModel.js";
+import { StaffModel } from "../models/staffModel.js";
+import { PatientModel } from "../models/PatientModel.js";
+import { type ILoginRequestBody, type IRegisterRequestBody, Role } from "../types/UserTypes.js";
+// 🎯 I-import ang ginawa nating utility helper
+import { findUserByEmail } from "../utils/findUserByEmail.js";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
@@ -14,8 +18,9 @@ export const registerUser = async (
   try {
     const { name, email, password, role } = req.body;
 
-    // Check if a user with this email already exists
-    const existingUser = await UserModel.findOne({ email });
+    // 🎯 Gamit ang utility natin, isang tawag na lang para malaman kung may duplicate email
+    const existingUser = await findUserByEmail(email);
+
     if (existingUser) {
       res.status(400).json({
         success: false,
@@ -24,8 +29,22 @@ export const registerUser = async (
       return;
     }
 
-    // Create and persist the new user (password hashed via pre-save hook)
-    const newUser = await UserModel.create({ name, email, password, role });
+    let newUser;
+
+    // Pagbubukod-bukod ng pag-save base sa pinadalang Role mula sa Postman
+    if (role === Role.Admin) {
+      newUser = await AdminModel.create({ name, email, password, role });
+    } else if (role === Role.Dentist || role === Role.Staff) {
+      newUser = await StaffModel.create({ name, email, password, role });
+    } else if (role === Role.Patient) {
+      newUser = await PatientModel.create({ name, email, password, role });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: `Role must be one of: ${Object.values(Role).join(", ")}`,
+      });
+      return;
+    }
 
     res.status(201).json({
       success: true,
@@ -57,8 +76,10 @@ export const loginUser = async (
   try {
     const { email, password } = req.body;
 
-    // Find user by email — explicitly select password for comparison
-    const user = await UserModel.findOne({ email }).select("+password");
+    // 🎯 Isang mabilisang tawag na lang din gamit ang Promise.all utility natin!
+    const user = await findUserByEmail(email);
+
+    // Kung kahit saan sa tatlong collections ay walang nakaparehong email
     if (!user) {
       res.status(401).json({
         success: false,
@@ -84,7 +105,6 @@ export const loginUser = async (
       role: user.role,
     };
 
-    // Siguraduhing may secret key bago pumirma ng token para sa TS type safety
     if (!JWT_SECRET) {
       res.status(500).json({
         success: false,
@@ -93,7 +113,6 @@ export const loginUser = async (
       return;
     }
 
-    // DIREKTANG INILAGAY ANG "1d" PARA MAWALA ANG TYPE ERROR
     const token = jwt.sign(tokenPayload, JWT_SECRET, {
       expiresIn: "1d", 
     });
