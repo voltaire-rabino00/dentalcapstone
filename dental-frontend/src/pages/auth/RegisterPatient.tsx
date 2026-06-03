@@ -1,21 +1,32 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { InputField } from "../../components/ui/InputField.js";
+import { SuccessModal } from "../../components/ui/SuccessfulModal.js";
 import axiosInstance from "../../api/axiosInstance.js";
+
+// Import mo ang mga GIF mo rito
+import successGif from "../../assets/success.gif";
+import errorGif from "../../assets/error.gif"; 
 
 export const RegisterPatient: React.FC = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Dalawang state para sa modals
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await axiosInstance.post("/auth/register", { ...formData, role: "Patient" });
-      alert("Registration successful! Welcome to our dental family.");
+      setIsSuccessModalOpen(true); // Buksan ang Success Modal
     } catch (err) {
       console.error(err);
-      alert("Registration failed. Please check your credentials.");
+      setIsErrorModalOpen(true); // Buksan ang Error Modal imbes na alert()
     } finally {
       setIsLoading(false);
     }
@@ -61,6 +72,24 @@ export const RegisterPatient: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <SuccessModal 
+        isOpen={isSuccessModalOpen}
+        onClose={() => navigate("/login")}
+        title="Welcome to our Family!"
+        message="Your account has been successfully created."
+        gifUrl={successGif}
+      />
+
+      {/* Error Modal */}
+      <SuccessModal 
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        title="Registration Failed"
+        message="Something went wrong. Please check your details and try again."
+        gifUrl={errorGif}
+      />
     </div>
   );
 };
