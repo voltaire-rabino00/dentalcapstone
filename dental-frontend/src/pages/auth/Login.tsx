@@ -20,7 +20,9 @@ export const Login: React.FC = () => {
       
       // I-save ang token (Assuming JWT ang ibabalik ng backend mo)
       localStorage.setItem("token", response.data.data.token);
-      
+
+      // Siguraduhin na i-JSON.stringify ang object para maging string
+      localStorage.setItem("user", JSON.stringify(response.data.data.user));
       // Redirect pagkatapos ng successful login
       navigate("/dashboard"); 
     } catch (err: unknown) {
