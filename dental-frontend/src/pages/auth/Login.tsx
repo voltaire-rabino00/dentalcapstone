@@ -9,24 +9,33 @@ export const Login: React.FC = () => {
   const [error, setError] = useState(""); // Default UI para sa error
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+ const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      // Koneksyon sa backend
+      // 1. Koneksyon sa backend
       const response = await axiosInstance.post("/auth/login", formData);
+      const { token, user } = response.data.data;
       
-      // I-save ang token (Assuming JWT ang ibabalik ng backend mo)
-      localStorage.setItem("token", response.data.data.token);
+      // 2. I-save ang credentials
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
-      // Siguraduhin na i-JSON.stringify ang object para maging string
-      localStorage.setItem("user", JSON.stringify(response.data.data.user));
-      // Redirect pagkatapos ng successful login
-      navigate("/dashboard"); 
+      // 3. DYNAMIC REDIRECTION (Dito ang magic!)
+      // Tinitignan natin ang 'role' na galing sa database
+      if (user.role === "Admin") {
+        navigate("/admin/dashboard"); // Para sa Admin
+      } else if (user.role === "staff" || user.role === "dentist") {
+        navigate("/staff/dashboard"); // O kahit anong route para sa staff
+      } else {
+        navigate("/dashboard"); // Default para sa Patient
+      }
+
     } catch (err: unknown) {
       console.error(err);
+      // Mas magandang error message base sa server response
       setError("Invalid email or password. Please try again.");
     } finally {
       setIsLoading(false);

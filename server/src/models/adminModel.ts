@@ -46,4 +46,4 @@ AdminSchema.methods.comparePassword = async function (candidatePassword: string)
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-export const AdminModel = model<IUser>("Admin", AdminSchema);
+export const AdminModel = model<IUser>("Admin", AdminSchema, 'admins');

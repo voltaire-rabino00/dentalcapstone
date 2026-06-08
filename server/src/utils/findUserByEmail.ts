@@ -8,10 +8,12 @@ import { type IUser } from "../types/UserTypes.js";
  * Gamit ang Promise.all para sabay-sabay at mas mabilis ang query sa database.
  */
 export async function findUserByEmail(email: string): Promise<IUser | null> {
+  const normalizedEmail = email.toLowerCase(); // Laging gawing lowercase
+  
   const [patient, staff, admin] = await Promise.all([
-    PatientModel.findOne({ email }).select("+password"),
-    StaffModel.findOne({ email }).select("+password"),
-    AdminModel.findOne({ email }).select("+password"),
+    PatientModel.findOne({ email: normalizedEmail }).select("+password"),
+    StaffModel.findOne({ email: normalizedEmail }).select("+password"),
+    AdminModel.findOne({ email: normalizedEmail }).select("+password"),
   ]);
 
   return patient || staff || admin;

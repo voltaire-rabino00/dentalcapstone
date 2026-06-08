@@ -4,6 +4,11 @@ import { RegisterPatient } from "./pages/auth/RegisterPatient.js";
 import { ProtectedRoute } from "./components/protected/ProtectedRoute.js";
 import { Layout } from "./components/layout/Layout.js"; // Siguraduhin na tama ang import path nito
 import { PatientDashboard } from "./pages/patient/PatientDashboard.js";
+import { AdminProtectedRoute } from "./components/protected/AdminProtectedRoute.js";
+import { AdminLayout } from "./components/layout/AdminLayout.js";
+import { AdminDashboard } from "./pages/admin/AdminDashboard.js";
+// import { AdminAttendance } from "./pages/admin/AdminAttendance.js"; 
+// import { AdminPatients } from "./pages/admin/AdminPatients.js";
 
 function App() {
   return (
@@ -14,19 +19,26 @@ function App() {
         <Route path="/register" element={<RegisterPatient />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Protected Routes */}
+        {/* --- Patient Protected Routes --- */}
         <Route element={<ProtectedRoute />}>
-          {/* I-wrap ang dashboard sa Layout para lumabas ang Sidebar */}
           <Route element={<Layout />}>
-            {/* DITO MO ILAGAY ANG MGA URL PATHS */}
             <Route path="/dashboard" element={<PatientDashboard />} />
-            {/* Kapag may Booking at MedicalRecords ka na, 
-               ilalagay mo lang sila rito gaya nito:
-               <Route path="/booking" element={<Booking />} />
-               <Route path="/medical-records" element={<MedicalRecords />} />
-            */}
+            {/* Dito mo ilalagay ang booking at medical records sa future */}
           </Route>
         </Route>
+
+        {/* --- Admin Protected Routes --- */}
+        <Route element={<AdminProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        {/* <Route path="/admin/attendance" element={<AdminAttendance />} />
+        <Route path="/admin/patients" element={<AdminPatients />} /> */}
+          </Route>
+        </Route>
+
+        {/* Catch-all route for invalid paths */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );
