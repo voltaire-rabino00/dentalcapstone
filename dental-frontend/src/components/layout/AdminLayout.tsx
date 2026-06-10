@@ -13,7 +13,8 @@ export const AdminLayout: React.FC = () => {
   const menuItems = [
     { name: 'Dashboard', path: '/admin/dashboard' },
     { name: 'Attendance', path: '/admin/attendance' },
-    { name: 'Patients', path: '/admin/patients' },
+    { name: 'Manage Patients', path: '/admin/patients' },
+    {name: 'Manage Staff', path: '/admin/staff'},
   ];
 
   return (

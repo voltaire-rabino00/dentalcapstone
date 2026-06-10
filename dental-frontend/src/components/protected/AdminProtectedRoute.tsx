@@ -6,14 +6,17 @@ export const AdminProtectedRoute = () => {
   const userData = localStorage.getItem("user");
   
   const user = userData ? JSON.parse(userData) : null;
-
-  // I-convert ang role sa lowercase para sigurado
   const userRole = user?.role?.toLowerCase();
 
-  // I-check kung "admin" (lowercase na ito)
+  // DEBUGGING: I-log ito sa console (F12 > Console tab)
+  console.log("Token:", token);
+  console.log("User:", user);
+  console.log("Role:", userRole);
+
   if (token && user && userRole === "admin") {
     return <Outlet />; 
   }
 
+  console.log("Redirecting to login..."); // Tignan kung lumalabas ito pag-click mo
   return token ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
 };

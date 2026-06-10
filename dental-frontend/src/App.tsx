@@ -7,8 +7,7 @@ import { PatientDashboard } from "./pages/patient/PatientDashboard.js";
 import { AdminProtectedRoute } from "./components/protected/AdminProtectedRoute.js";
 import { AdminLayout } from "./components/layout/AdminLayout.js";
 import { AdminDashboard } from "./pages/admin/AdminDashboard.js";
-// import { AdminAttendance } from "./pages/admin/AdminAttendance.js"; 
-// import { AdminPatients } from "./pages/admin/AdminPatients.js";
+import { ManageStaff } from "./pages/admin/ManageStaff.js";
 
 function App() {
   return (
@@ -28,12 +27,11 @@ function App() {
         </Route>
 
         {/* --- Admin Protected Routes --- */}
+{/* --- Admin Protected Routes --- */}
         <Route element={<AdminProtectedRoute />}>
           <Route element={<AdminLayout />}>
-           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        {/* <Route path="/admin/attendance" element={<AdminAttendance />} />
-        <Route path="/admin/patients" element={<AdminPatients />} /> */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/staff" element={<ManageStaff />} /> 
           </Route>
         </Route>
 
