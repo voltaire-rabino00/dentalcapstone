@@ -26,5 +26,11 @@ export interface IUser extends Document {
   role: Role;
   createdAt: Date;
   updatedAt: Date;
+  
+  // Opsyonal na fields (hindi lahat ng users ay may ganito)
+  idNo?: string;
+  contact?: string;
+  status?: 'Active' | 'Inactive';
+  
   comparePassword(candidatePassword: string): Promise<boolean>;
 }

@@ -6,11 +6,11 @@ import { StaffRow } from './StaffRow';
 export interface Staff {
   idNo: string;
   name: string;
+  email: string;
   role: string;
   contact: string;
   status: 'Active' | 'Inactive';
-  timeIn?: string;
-  timeOut?: string;
+
 }
 
 export const StaffTable = ({ data }: { data: Staff[] }) => (
@@ -23,8 +23,7 @@ export const StaffTable = ({ data }: { data: Staff[] }) => (
           <th className="p-4">NAME</th>
           <th className="p-4">CONTACT NO.</th>
           <th className="p-4">STATUS</th>
-          <th className="p-4">TIME IN</th>
-          <th className="p-4">TIME OUT</th>
+          <th className="p-4 text-center">ACTIONS</th>
           <th className="p-4"></th>
         </tr>
       </thead>

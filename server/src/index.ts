@@ -4,10 +4,10 @@ import express, { type Application, type Request, type Response } from 'express'
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-
 import { globalLimiter } from './middlewares/rateLimiters.js';
 import connectDatabase from './config/DatabaseConfig.js';
 import authRoutes from './routes/AuthRoutes.js';
+import staffRoutes from "./routes/staffRoutes.js";
 
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
@@ -47,6 +47,7 @@ connectDatabase();
 // ==========================================
 
 app.use('/api/auth', authRoutes);
+app.use("/api/staffs", staffRoutes);
 
 // Health check route
 app.get('/', (req: Request, res: Response) => {

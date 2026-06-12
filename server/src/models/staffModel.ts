@@ -4,27 +4,18 @@ import { type IUser, Role } from "../types/UserTypes.js";
 
 const SALT_ROUNDS = 12;
 
+// Sa staffModel.ts
 const StaffSchema = new Schema<IUser>(
   {
-    name: { type: String, required: [true, "Name is required"], trim: true },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      lowercase: true,
-      trim: true,
-      index: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters"],
-    },
-    role: {
-      type: String,
-      enum: [Role.Dentist, Role.Staff],
-      required: [true, "Role is required"],
-    },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: [Role.Dentist, Role.Staff], required: true },
+    
+    // IDAGDAG MO ITO para lumabas sa table:
+    idNo: { type: String }, 
+    contact: { type: String },
+    status: { type: String, enum: ['Active', 'Inactive'], default: 'Active' },
   },
   { timestamps: true }
 );
