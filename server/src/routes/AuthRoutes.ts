@@ -10,7 +10,7 @@ const router = Router();
 
 /**
  * @route   POST /api/auth/register
- * @desc    Register a new user (Admin, Dentist, Staff, or Patient)
+ * @description Creates a new user account after validating the request payload.
  * @access  Public
  */
 router.post(
@@ -22,7 +22,7 @@ router.post(
 
 /**
  * @route   POST /api/auth/login
- * @desc    Authenticate a user and return a JWT
+ * @description Authenticates a user and returns a JWT token.
  * @access  Public
  */
 router.post(
