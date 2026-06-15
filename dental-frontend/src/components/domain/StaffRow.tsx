@@ -2,7 +2,14 @@
 import { Avatar } from '../common/Avatar';
 import type { Staff } from './StaffTable';
 
-export const StaffRow = ({ staff }: { staff: Staff }) => (
+interface StaffRowProps {
+  staff: Staff;
+  onDelete: (id: string) => void;
+  onEdit: (staff: Staff) => void;
+  onView: (staff: Staff) => void;
+}
+
+export const StaffRow = ({ staff, onDelete, onEdit, onView }: StaffRowProps) => (
   <tr className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
     <td className="p-4"><input type="checkbox" className="rounded border-slate-300" /></td>
     <td className="p-4 text-sm text-slate-600">{staff.idNo}</td>
@@ -16,7 +23,6 @@ export const StaffRow = ({ staff }: { staff: Staff }) => (
     </td>
     <td className="p-4 text-sm text-slate-600">{staff.contact}</td>
     
-    {/* DITO YUNG STATUS BADGE NA NAWALA */}
     <td className="p-4">
       <span className={`px-2 py-1 rounded-full text-xs font-medium flex w-fit items-center gap-1 ${
         staff.status === 'Active' ? 'bg-teal-50 text-teal-700' : 'bg-red-50 text-red-600'
@@ -25,17 +31,26 @@ export const StaffRow = ({ staff }: { staff: Staff }) => (
         {staff.status}
       </span>
     </td>
-    {/* Action Button */}
-      <td className="p-4 flex gap-2 justify-center">
-        <button className="px-3 py-1 bg-blue-50 text-blue-700 rounded-md text-[10px] font-bold hover:bg-blue-100 transition">
-          VIEW
-        </button>
-        <button className="px-3 py-1 bg-amber-50 text-amber-700 rounded-md text-[10px] font-bold hover:bg-amber-100 transition">
-          EDIT
-        </button>
-        <button className="px-3 py-1 bg-red-50 text-red-700 rounded-md text-[10px] font-bold hover:bg-red-100 transition">
-          DELETE
-        </button>
-</td>
+    
+    <td className="p-4 flex gap-2 justify-center">
+      <button
+        onClick={() => onView(staff)}
+        className="px-3 py-1 bg-blue-50 text-blue-700 rounded-md text-[10px] font-bold hover:bg-blue-100 transition"
+      >
+        VIEW
+      </button>
+      <button
+        onClick={() => onEdit(staff)}
+        className="px-3 py-1 bg-amber-50 text-amber-700 rounded-md text-[10px] font-bold hover:bg-amber-100 transition"
+      >
+        EDIT
+      </button>
+      <button 
+        onClick={() => onDelete(staff._id)}
+        className="px-3 py-1 bg-red-50 text-red-700 rounded-md text-[10px] font-bold hover:bg-red-100 transition"
+      >
+        DELETE
+      </button>
+    </td>
   </tr>
 );

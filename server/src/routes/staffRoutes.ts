@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllStaff, createStaff } from "../controllers/StaffControllers.js";
+import { getAllStaff, createStaff, updateStaff, deleteStaff } from "../controllers/StaffControllers.js";
 
 const router = Router();
 
@@ -16,5 +16,7 @@ router.get("/", getAllStaff);
  * @access  Private (Admin)
  */
 router.post("/", createStaff);
+router.put("/:id", updateStaff);    // Update route
+router.delete("/:id", deleteStaff); // Delete route
 
 export default router;

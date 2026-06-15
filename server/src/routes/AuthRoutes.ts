@@ -5,16 +5,16 @@ import {
   loginValidationRules,
   handleValidationErrors,
 } from "../middlewares/AuthValidators.js";
+import { loginLimiter, registerLimiter } from '../middlewares/rateLimiters.js';
 
 const router = Router();
 
 /**
  * @route   POST /api/auth/register
- * @description Creates a new user account after validating the request payload.
- * @access  Public
  */
 router.post(
   "/register",
+  registerLimiter, // Dito naka-attach ang register limiter
   registerValidationRules,
   handleValidationErrors,
   registerUser
@@ -22,11 +22,10 @@ router.post(
 
 /**
  * @route   POST /api/auth/login
- * @description Authenticates a user and returns a JWT token.
- * @access  Public
  */
 router.post(
   "/login",
+  loginLimiter, // Dito naka-attach ang login limiter
   loginValidationRules,
   handleValidationErrors,
   loginUser
