@@ -8,6 +8,8 @@ import { AdminProtectedRoute } from "./components/protected/AdminProtectedRoute.
 import { AdminLayout } from "./components/layout/AdminLayout.js";
 import { AdminDashboard } from "./pages/admin/AdminDashboard.js";
 import { ManageStaff } from "./pages/admin/ManageStaff.js";
+import { StaffLogin } from "./pages/staff/StaffLogin.js";
+// import { StaffSetup } from "./pages/staff/StaffSetup.js";
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/staff/login" element={<StaffLogin />} />
         <Route path="/register" element={<RegisterPatient />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
 
@@ -23,6 +26,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<PatientDashboard />} />
             {/* Dito mo ilalagay ang booking at medical records sa future */}
+            {/* <Route path="/staff/setup" element={<StaffSetup />} /> */}
           </Route>
         </Route>
 
