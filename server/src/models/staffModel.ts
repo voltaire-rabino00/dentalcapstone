@@ -34,4 +34,4 @@ StaffSchema.methods.comparePassword = async function (candidatePassword: string)
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-export const StaffModel = model<IUser>("Staff", StaffSchema);
+export const StaffModel = model<IUser>("Staff", StaffSchema, "staffs");

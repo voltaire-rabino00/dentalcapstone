@@ -9,7 +9,6 @@ import { findUserByEmail } from "../utils/findUserByEmail.js";
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 // ─── Register User ─────────────────────────────────────────────────────────────
-
 export const registerUser = async (
   req: Request<{}, {}, IRegisterRequestBody>,
   res: Response
@@ -17,98 +16,90 @@ export const registerUser = async (
   try {
     const { name, email, password, role } = req.body;
 
-    // 1. SECURITY: I-disable ang public registration para sa Admin
     if (role === Role.Admin) {
-      res.status(403).json({
-        success: false,
-        message: "Access Denied: Admin accounts cannot be created through public registration.",
-      });
+      res.status(403).json({ success: false, message: "Access Denied." });
       return;
     }
 
-    // 2. NORMALIZE EMAIL: Convert to lowercase to prevent duplicates (e.g. Admin@test.com vs admin@test.com)
     const normalizedEmail = email.toLowerCase();
-
-    // 3. CHECK DUPLICATE
     const existingUser = await findUserByEmail(normalizedEmail);
     if (existingUser) {
-      res.status(400).json({
-        success: false,
-        message: "An account with this email address already exists.",
-      });
+      res.status(400).json({ success: false, message: "Email already exists." });
       return;
     }
 
     let newUser;
-
-    // 4. SAVE BASE SA ROLE
     if (role === Role.Dentist || role === Role.Staff) {
       newUser = await StaffModel.create({ name, email: normalizedEmail, password, role });
     } else if (role === Role.Patient) {
       newUser = await PatientModel.create({ name, email: normalizedEmail, password, role });
     } else {
-      res.status(400).json({
-        success: false,
-        message: `Invalid role. Must be one of: ${Object.values(Role).join(", ")}`,
-      });
+      res.status(400).json({ success: false, message: "Invalid role." });
       return;
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Account registered successfully.",
-      data: {
-        user: { _id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role },
-      },
-    });
+    res.status(201).json({ success: true, message: "Registered successfully." });
   } catch (error) {
     console.error("[AuthController] registerUser error:", error);
-    res.status(500).json({
-      success: false,
-      message: "An internal server error occurred.",
-    });
+    res.status(500).json({ success: false, message: "Server error." });
   }
 };
 
-// ─── Login User ────────────────────────────────────────────────────────────────
-
+// ─── Login User (Password) ──────────────────────────────────────────────────────
 export const loginUser = async (
   req: Request<{}, {}, ILoginRequestBody>,
   res: Response
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
-
-    // I-normalize din ang email sa login para match sa database
     const user = await findUserByEmail(email.toLowerCase());
 
-    if (!user) {
+    if (!user || !(await user.comparePassword(password))) {
       res.status(401).json({ success: false, message: "Invalid email or password." });
       return;
     }
 
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      res.status(401).json({ success: false, message: "Invalid email or password." });
-      return;
-    }
-
-    const token = jwt.sign(
-      { id: user._id, name: user.name, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const token = jwt.sign({ id: user._id, name: user.name, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
 
     res.status(200).json({
       success: true,
       message: "Login successful.",
-      data: {
-        token,
-        user: { _id: user._id, name: user.name, email: user.email, role: user.role },
-      },
+      data: { token, user: { _id: user._id, name: user.name, email: user.email, role: user.role } },
     });
   } catch (error) {
     console.error("[AuthController] loginUser error:", error);
     res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+// ─── Staff QR Login ─────────────────────────────────────────────────────────────
+export const loginStaffWithQR = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { qrToken } = req.body;
+    
+    // Hanapin ang staff gamit ang QR (dito ang logic mo)
+    const staff = await StaffModel.findById(qrToken);
+    
+    if (!staff) {
+      res.status(401).json({ success: false, message: "Invalid QR Code." });
+      return;
+    }
+
+    const token = jwt.sign({ id: staff._id, role: staff.role }, JWT_SECRET, { expiresIn: "1d" });
+    
+    res.status(200).json({ 
+      success: true, 
+      data: { 
+        token, 
+        user: { 
+          _id: staff._id, 
+          name: staff.name, 
+          isActivated: (staff as any).isActivated // Siguraduhin na may field ka na ganito sa Schema
+        } 
+      } 
+    });
+  } catch (error) {
+    console.error("[AuthController] loginStaffWithQR error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

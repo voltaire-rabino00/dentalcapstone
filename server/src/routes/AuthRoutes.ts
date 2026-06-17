@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "../controllers/AuthControllers.js";
+import { registerUser, loginUser, loginStaffWithQR } from "../controllers/AuthControllers.js";
 import {
   registerValidationRules,
   loginValidationRules,
@@ -30,5 +30,11 @@ router.post(
   handleValidationErrors,
   loginUser
 );
+
+/**
+ * @route   POST /api/auth/staff/verify-qr
+ */
+// Dito mo sya ilalagay
+router.post("/staff/verify-qr", loginStaffWithQR);
 
 export default router;

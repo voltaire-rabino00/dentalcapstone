@@ -9,7 +9,7 @@ interface LoginCredentials {
 
 export const staffAuth = {
   loginWithPassword: async (credentials: LoginCredentials) => {
-    return await axiosInstance.post("/auth/staff/login", credentials);
+    return await axiosInstance.post("/auth/login", credentials);
   },
   verifyQRCode: async (qrToken: string) => {
     // Siguraduhing tumutugma ito sa route sa backend mo
