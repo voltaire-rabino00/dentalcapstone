@@ -9,7 +9,7 @@ export const Layout: React.FC = () => {
     navigate("/login");
   };
 
-  // Helper para sa active state ng links
+ 
   const isActive = (path: string) => location.pathname === path ? "bg-teal-600 shadow-lg" : "hover:bg-teal-700/50";
 
   return (

@@ -6,13 +6,13 @@ export const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.clear(); // Linisin lahat ng data sa local storage
+    localStorage.clear(); 
     navigate("/login");
   };
 
   const menuItems = [
     { name: 'Dashboard', path: '/admin/dashboard' },
-    { name: 'Attendance', path: '/admin/attendance' },
+    { name: 'Manage Attendance', path: '/admin/attendance' },
     { name: 'Manage Patients', path: '/admin/patients' },
     {name: 'Manage Staff', path: '/admin/staff'},
   ];

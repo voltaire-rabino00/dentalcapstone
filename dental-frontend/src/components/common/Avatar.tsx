@@ -8,7 +8,6 @@ export const Avatar = ({ name }: { name: string }) => {
     .toUpperCase()
     .slice(0, 2);
 
-  // Simple logic para sa random-looking colors base sa pangalan
   const colors = ["bg-blue-500", "bg-teal-500", "bg-orange-500", "bg-purple-500"];
   const bgColor = colors[name?.length % colors.length] || "bg-slate-400";
 

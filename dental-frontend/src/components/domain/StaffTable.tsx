@@ -10,7 +10,7 @@ export interface Staff {
   status: 'Active' | 'Inactive';
 }
 
-// 1. Gawa ka ng interface para sa props
+
 interface StaffTableProps {
   data: Staff[];
   onDelete: (id: string) => void;
@@ -18,7 +18,6 @@ interface StaffTableProps {
   onView: (staff: Staff) => void;
 }
 
-// 2. Gamitin ang interface sa function signature
 export const StaffTable = ({ data, onDelete, onEdit, onView }: StaffTableProps) => (
   <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
     <table className="w-full text-left">
