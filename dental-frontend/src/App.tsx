@@ -11,6 +11,7 @@ import { AdminLayout } from "./components/layout/AdminLayout.js";
 import { AdminDashboard } from "./pages/admin/AdminDashboard.js";
 import { ManageStaff } from "./pages/admin/ManageStaff.js";
 import { StaffLogin } from "./pages/staff/StaffLogin.js";
+import { AttendancePage } from "./pages/admin/ManageAttendance.js";
 // import { StaffSetup } from "./pages/staff/StaffSetup.js";
 
 // Initialize the socket ONCE at module scope, outside the component.
@@ -54,7 +55,8 @@ function App() {
         <Route element={<AdminProtectedRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/staff" element={<ManageStaff />} />
+            <Route path="/admin/staff" element={<ManageStaff />} /> 
+            <Route path="/admin/attendance" element={<AttendancePage />} />
           </Route>
         </Route>
 
