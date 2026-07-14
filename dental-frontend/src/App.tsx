@@ -12,6 +12,8 @@ import { AdminDashboard } from "./pages/admin/AdminDashboard.js";
 import { ManageStaff } from "./pages/admin/ManageStaff.js";
 import { StaffLogin } from "./pages/staff/StaffLogin.js";
 import { AttendancePage } from "./pages/admin/ManageAttendance.js";
+import { StaffDashboard } from "./pages/staff/StaffDashboard.js";
+import { StaffProtectedRoute } from "./components/protected/StaffProtectedRoute.js";
 // import { StaffSetup } from "./pages/staff/StaffSetup.js";
 
 // Initialize the socket ONCE at module scope, outside the component.
@@ -59,6 +61,11 @@ function App() {
             <Route path="/admin/attendance" element={<AttendancePage />} />
           </Route>
         </Route>
+
+              {/* --- Staff Protected Routes --- */}
+        <Route element={<StaffProtectedRoute />}>
+            <Route path="/staff/dashboard" element={<StaffDashboard />} />
+          </Route>
 
         {/* Catch-all route for invalid paths */}
         <Route path="*" element={<Navigate to="/login" replace />} />

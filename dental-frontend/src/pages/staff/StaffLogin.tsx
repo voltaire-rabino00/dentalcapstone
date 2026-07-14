@@ -1,3 +1,4 @@
+// pages/staff/StaffLogin.tsx
 import React, { useState } from "react";
 import { QRScanner } from "../../components/ui/QrScanner";
 import { staffAuth } from "../../api/authService";
@@ -20,13 +21,13 @@ export const StaffLogin: React.FC = () => {
     try {
       setLoading(true);
       const response = await staffAuth.verifyQRCode(result);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      // Gamitin natin ang response structure mula sa backend (data.data)
+      const { token, user } = response.data.data;
       
-      if (!response.data.user.isActivated) {
-        navigate("/staff/setup");
-      } else {
-        navigate("/staff/dashboard");
-      }
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      
+      navigate("/staff/dashboard");
     } catch (error) {
       console.error("QR Login Failed:", error);
       alert("Invalid QR Code or Session Expired");
@@ -35,35 +36,30 @@ export const StaffLogin: React.FC = () => {
     }
   };
 
-  // --- 2. Password Login Handler (Dapat nasa loob ng component!) ---
-const handlePasswordLogin = async (credentials: LoginCredentials) => {
-  try {
-    setLoading(true);
-    const response = await staffAuth.loginWithPassword(credentials);
-    
-    // I-log natin ang buong response para makita kung nasaan ang 'user'
-    console.log("Full Login Response:", response); 
-    
-    // Siguraduhin na ang path ay tugma sa response structure
-    // Halimbawa, kung ang 'user' ay nasa loob ng 'data':
-    const userData = response.data?.user || response.data; 
-
-    if (userData) {
-      localStorage.setItem("user", JSON.stringify(userData));
+  // --- 2. Password Login Handler (Fixed) ---
+  const handlePasswordLogin = async (credentials: LoginCredentials) => {
+    try {
+      setLoading(true);
+      const response = await staffAuth.loginWithPassword(credentials);
       
-      if (!userData.isActivated) {
-        navigate("/staff/setup");
-      } else {
+      // I-destructure ang response base sa structure ng backend mo
+      const { token, user } = response.data.data;
+
+      if (token && user) {
+        // I-save ang parehong token at user object
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        
+        // Diretsong punta sa dashboard dahil admin-only invitation ang system mo
         navigate("/staff/dashboard"); 
       }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed! Please check your credentials.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Login error details:", error);
-    alert("Login failed!");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100">
