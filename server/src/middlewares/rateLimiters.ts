@@ -1,19 +1,19 @@
 import rateLimit from 'express-rate-limit';
 
-// Global limiter para sa lahat ng requests
+
 export const globalLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
+  windowMs: 1 * 60 * 1000, 
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later.' },
 });
 
-// Login Limiter (Mas mahigpit)
+// Login Limiter 
 export const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Ginawa nating 5 attempts
-  skipSuccessfulRequests: true, // HINDI mabibilang ang tama ang password
+  windowMs: 15 * 60 * 1000, 
+  max: 5, 
+  skipSuccessfulRequests: true, 
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {

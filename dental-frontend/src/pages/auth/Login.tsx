@@ -16,15 +16,15 @@ export const Login: React.FC = () => {
     setError("");
 
     try {
-      // 1. Koneksyon sa backend
+      // 1. Backend Connection
       const response = await axiosInstance.post("/auth/login", formData);
       const { token, user } = response.data.data;
 
-      // 2. I-save ang credentials
+      // 2. Save Credentials
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // 3. Dynamic Redirection base sa role
+      // 3. Dynamic Redirection based on Role
       if (user.role === "Admin") {
         navigate("/admin/dashboard");
       } else if (user.role === "staff" || user.role === "dentist") {
@@ -33,7 +33,7 @@ export const Login: React.FC = () => {
         navigate("/dashboard");
       }
     } catch (err: unknown) {
-      // 4. Maayos na error handling
+      // 4. Proper Error Handling
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 429) {
           setError("Too many failed attempts. Please wait 15 minutes before trying again.");
