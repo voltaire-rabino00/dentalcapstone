@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api", // Palitan mo kung iba ang port ng backend mo
+  baseURL: "http://localhost:5000/api", // Change this to your backend API base URL
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request Interceptor: Automatic na isasabit ang JWT token kung meron sa localStorage
+// Request Interceptor: Automatically attach the token to every request if it exists
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
